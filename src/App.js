@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import MovieCard from './components/MovieCard';
 import { fetchPopularMovies } from './services/omdbApi';
-import { sampleMovies } from './data/sampleMovies';
 
 function App() {
   const [movies, setMovies] = useState([]);
@@ -13,9 +12,8 @@ function App() {
     const loadMovies = async () => {
       try {
         setLoading(true);
-        // Temporarily using sample data - replace with API call once you have a valid API key
-        // const popularMovies = await fetchPopularMovies(12);
-        setMovies(sampleMovies);
+        const popularMovies = await fetchPopularMovies(12);
+        setMovies(popularMovies);
         setError(null);
       } catch (err) {
         setError('Failed to load movies. Please try again later.');
