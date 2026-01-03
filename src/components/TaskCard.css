@@ -1,0 +1,181 @@
+.task-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 2px solid #f0f0f0;
+  margin-bottom: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.task-card:hover {
+  border-color: #6c63ff;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.task-card.completed {
+  background: #f8f9ff;
+  border-color: #e0e0e0;
+}
+
+.task-card.completed:hover {
+  border-color: #d0d0d0;
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.checkbox {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border: 2px solid #d0d0d0;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.checkbox:hover {
+  border-color: #6c63ff;
+  background: #f8f9ff;
+}
+
+.checkbox.checked {
+  background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
+  border-color: #6c63ff;
+}
+
+.check-icon {
+  width: 16px;
+  height: 16px;
+  color: white;
+  animation: checkIn 0.3s ease-out;
+}
+
+@keyframes checkIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.task-text-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.task-text {
+  margin: 0;
+  font-size: 16px;
+  color: #2d3748;
+  line-height: 1.5;
+  transition: all 0.3s ease;
+}
+
+.task-card.completed .task-text {
+  text-decoration: line-through;
+  color: #a0aec0;
+}
+
+.task-date {
+  font-size: 12px;
+  color: #a0aec0;
+}
+
+.delete-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border: none;
+  background: #fee;
+  color: #e53e3e;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: scale(0.8);
+  padding: 0;
+}
+
+.task-card:hover .delete-btn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.delete-btn:hover {
+  background: #e53e3e;
+  color: white;
+  transform: scale(1.1);
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
+}
+
+.delete-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Fade out animation for deletion */
+.task-card.removing {
+  animation: fadeOut 0.3s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+@media (max-width: 600px) {
+  .task-card {
+    padding: 14px 16px;
+  }
+  
+  .delete-btn {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  .task-text {
+    font-size: 15px;
+  }
+}

@@ -1,70 +1,145 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import MovieCard from './components/MovieCard';
-import { fetchPopularMovies } from './services/omdbApi';
+import TaskInput from './components/TaskInput';
+import TaskCard from './components/TaskCard';
+import FilterBar from './components/FilterBar';
 
 function App() {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [filter, setFilter] = useState('all'); // 'all', 'pending', 'completed'
 
+  // Load tasks from localStorage on mount
   useEffect(() => {
-    const loadMovies = async () => {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
       try {
-        setLoading(true);
-        const popularMovies = await fetchPopularMovies(12);
-        setMovies(popularMovies);
-        setError(null);
-      } catch (err) {
-        setError('Failed to load movies. Please try again later.');
-        console.error('Error loading movies:', err);
-      } finally {
-        setLoading(false);
+        setTasks(JSON.parse(savedTasks));
+      } catch (error) {
+        console.error('Error loading tasks:', error);
       }
-    };
-
-    loadMovies();
+    }
   }, []);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
+
+  // Add new task
+  const handleAddTask = (taskText) => {
+    const newTask = {
+      id: Date.now(),
+      text: taskText,
+      completed: false,
+      createdAt: new Date().toISOString(),
+    };
+    setTasks([newTask, ...tasks]);
+  };
+
+  // Toggle task completion
+  const handleToggleComplete = (taskId) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  // Delete task
+  const handleDeleteTask = (taskId) => {
+    setTasks(tasks.filter((task) => task.id !== taskId));
+  };
+
+  // Filter tasks based on current filter
+  const getFilteredTasks = () => {
+    switch (filter) {
+      case 'completed':
+        return tasks.filter((task) => task.completed);
+      case 'pending':
+        return tasks.filter((task) => !task.completed);
+      default:
+        return tasks;
+    }
+  };
+
+  // Calculate task counts
+  const taskCounts = {
+    all: tasks.length,
+    pending: tasks.filter((task) => !task.completed).length,
+    completed: tasks.filter((task) => task.completed).length,
+  };
+
+  const filteredTasks = getFilteredTasks();
 
   return (
     <div className="App">
       <header className="app-header">
-        <h1>IMDb Clone</h1>
-        <p className="tagline">Popular Movies</p>
+        <div className="header-content">
+          <h1 className="app-title">
+            <span className="title-icon">✓</span>
+            My To-Do List
+          </h1>
+          <p className="app-subtitle">Stay organized and productive</p>
+        </div>
       </header>
-      <main className="movies-container">
-        {loading && (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p className="loading-text">Loading movies...</p>
+
+      <main className="app-main">
+        <div className="todo-container">
+          <TaskInput onAddTask={handleAddTask} />
+          
+          <FilterBar
+            currentFilter={filter}
+            onFilterChange={setFilter}
+            taskCounts={taskCounts}
+          />
+
+          <div className="tasks-list">
+            {filteredTasks.length > 0 ? (
+              filteredTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onToggleComplete={handleToggleComplete}
+                  onDeleteTask={handleDeleteTask}
+                />
+              ))
+            ) : (
+              <div className="empty-state">
+                <div className="empty-icon">
+                  {filter === 'completed' ? '🎉' : '📝'}
+                </div>
+                <h3 className="empty-title">
+                  {filter === 'completed'
+                    ? 'No completed tasks yet'
+                    : filter === 'pending'
+                    ? 'No pending tasks'
+                    : 'No tasks yet'}
+                </h3>
+                <p className="empty-description">
+                  {filter === 'all'
+                    ? 'Add your first task to get started!'
+                    : `Switch to "All" to see your tasks`}
+                </p>
+              </div>
+            )}
           </div>
-        )}
-        
-        {error && (
-          <div className="error-container">
-            <p className="error-text">{error}</p>
-          </div>
-        )}
-        
-        {!loading && !error && movies.length > 0 && (
-          <>
-            {movies.map((movie) => (
-              <MovieCard
-                key={movie.id}
-                poster={movie.poster}
-                title={movie.title}
-                year={movie.year}
-                rating={movie.rating}
-              />
-            ))}
-          </>
-        )}
-        
-        {!loading && !error && movies.length === 0 && (
-          <div className="no-movies">
-            <p>No movies found.</p>
-          </div>
-        )}
+
+          {tasks.length > 0 && (
+            <div className="stats-bar">
+              <span className="stat-item">
+                <strong>{taskCounts.pending}</strong> pending
+              </span>
+              <span className="stat-divider">•</span>
+              <span className="stat-item">
+                <strong>{taskCounts.completed}</strong> completed
+              </span>
+              <span className="stat-divider">•</span>
+              <span className="stat-item">
+                <strong>{taskCounts.all}</strong> total
+              </span>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
