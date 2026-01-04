@@ -10,11 +10,12 @@
   flex: 1;
   padding: 14px 20px;
   font-size: 16px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid rgba(128, 128, 128, 0.3);
   border-radius: 12px;
   outline: none;
   transition: all 0.3s ease;
-  background: white;
+  background: var(--card-bg);
+  color: var(--card-text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
@@ -24,7 +25,8 @@
 }
 
 .task-input::placeholder {
-  color: #999;
+  color: var(--card-text-secondary);
+  opacity: 0.6;
 }
 
 .add-task-btn {

@@ -3,9 +3,11 @@
   gap: 12px;
   margin-bottom: 24px;
   padding: 8px;
-  background: #f8f9fa;
+  background: var(--card-bg);
   border-radius: 12px;
   width: fit-content;
+  transition: background 0.3s ease;
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .filter-btn {
@@ -16,7 +18,7 @@
   font-size: 15px;
   font-weight: 600;
   background: transparent;
-  color: #6b7280;
+  color: var(--card-text-secondary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -25,8 +27,8 @@
 }
 
 .filter-btn:hover {
-  background: white;
-  color: #374151;
+  background: rgba(108, 99, 255, 0.1);
+  color: var(--card-text);
 }
 
 .filter-btn.active {

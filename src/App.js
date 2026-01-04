@@ -3,6 +3,7 @@ import './App.css';
 import TaskInput from './components/TaskInput';
 import TaskCard from './components/TaskCard';
 import FilterBar from './components/FilterBar';
+import ThemeSwitcher from './components/ThemeSwitcher';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -75,6 +76,9 @@ function App() {
     <div className="App">
       <header className="app-header">
         <div className="header-content">
+          <div className="theme-switcher-wrapper">
+            <ThemeSwitcher />
+          </div>
           <h1 className="app-title">
             <span className="title-icon">✓</span>
             My To-Do List
