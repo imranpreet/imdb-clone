@@ -1,76 +1,43 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import TaskInput from './components/TaskInput';
-import TaskCard from './components/TaskCard';
-import FilterBar from './components/FilterBar';
+import NoteInput from './components/NoteInput';
+import NoteCard from './components/NoteCard';
 import ThemeSwitcher from './components/ThemeSwitcher';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState('all'); // 'all', 'pending', 'completed'
+  const [notes, setNotes] = useState([]);
 
-  // Load tasks from localStorage on mount
+  // Load notes from localStorage on mount
   useEffect(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    if (savedTasks) {
+    const savedNotes = localStorage.getItem('notes');
+    if (savedNotes) {
       try {
-        setTasks(JSON.parse(savedTasks));
+        setNotes(JSON.parse(savedNotes));
       } catch (error) {
-        console.error('Error loading tasks:', error);
+        console.error('Error loading notes:', error);
       }
     }
   }, []);
 
-  // Save tasks to localStorage whenever they change
+  // Save notes to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }, [tasks]);
+    localStorage.setItem('notes', JSON.stringify(notes));
+  }, [notes]);
 
-  // Add new task
-  const handleAddTask = (taskText) => {
-    const newTask = {
+  // Add new note
+  const handleAddNote = (noteText) => {
+    const newNote = {
       id: Date.now(),
-      text: taskText,
-      completed: false,
+      text: noteText,
       createdAt: new Date().toISOString(),
     };
-    setTasks([newTask, ...tasks]);
+    setNotes([newNote, ...notes]);
   };
 
-  // Toggle task completion
-  const handleToggleComplete = (taskId) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
+  // Delete note
+  const handleDeleteNote = (noteId) => {
+    setNotes(notes.filter((note) => note.id !== noteId));
   };
-
-  // Delete task
-  const handleDeleteTask = (taskId) => {
-    setTasks(tasks.filter((task) => task.id !== taskId));
-  };
-
-  // Filter tasks based on current filter
-  const getFilteredTasks = () => {
-    switch (filter) {
-      case 'completed':
-        return tasks.filter((task) => task.completed);
-      case 'pending':
-        return tasks.filter((task) => !task.completed);
-      default:
-        return tasks;
-    }
-  };
-
-  // Calculate task counts
-  const taskCounts = {
-    all: tasks.length,
-    pending: tasks.filter((task) => !task.completed).length,
-    completed: tasks.filter((task) => task.completed).length,
-  };
-
-  const filteredTasks = getFilteredTasks();
 
   return (
     <div className="App">
@@ -80,66 +47,41 @@ function App() {
             <ThemeSwitcher />
           </div>
           <h1 className="app-title">
-            <span className="title-icon">✓</span>
-            My To-Do List
+            <span className="title-icon">📝</span>
+            My Notes App
           </h1>
-          <p className="app-subtitle">Stay organized and productive</p>
+          <p className="app-subtitle">Capture your thoughts and ideas</p>
         </div>
       </header>
 
       <main className="app-main">
-        <div className="todo-container">
-          <TaskInput onAddTask={handleAddTask} />
-          
-          <FilterBar
-            currentFilter={filter}
-            onFilterChange={setFilter}
-            taskCounts={taskCounts}
-          />
+        <div className="notes-container">
+          <NoteInput onAddNote={handleAddNote} />
 
-          <div className="tasks-list">
-            {filteredTasks.length > 0 ? (
-              filteredTasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onToggleComplete={handleToggleComplete}
-                  onDeleteTask={handleDeleteTask}
+          <div className="notes-list">
+            {notes.length > 0 ? (
+              notes.map((note) => (
+                <NoteCard
+                  key={note.id}
+                  note={note}
+                  onDeleteNote={handleDeleteNote}
                 />
               ))
             ) : (
               <div className="empty-state">
-                <div className="empty-icon">
-                  {filter === 'completed' ? '🎉' : '📝'}
-                </div>
-                <h3 className="empty-title">
-                  {filter === 'completed'
-                    ? 'No completed tasks yet'
-                    : filter === 'pending'
-                    ? 'No pending tasks'
-                    : 'No tasks yet'}
-                </h3>
+                <div className="empty-icon">�</div>
+                <h3 className="empty-title">No notes yet</h3>
                 <p className="empty-description">
-                  {filter === 'all'
-                    ? 'Add your first task to get started!'
-                    : `Switch to "All" to see your tasks`}
+                  Start writing your first note above!
                 </p>
               </div>
             )}
           </div>
 
-          {tasks.length > 0 && (
+          {notes.length > 0 && (
             <div className="stats-bar">
               <span className="stat-item">
-                <strong>{taskCounts.pending}</strong> pending
-              </span>
-              <span className="stat-divider">•</span>
-              <span className="stat-item">
-                <strong>{taskCounts.completed}</strong> completed
-              </span>
-              <span className="stat-divider">•</span>
-              <span className="stat-item">
-                <strong>{taskCounts.all}</strong> total
+                <strong>{notes.length}</strong> {notes.length === 1 ? 'note' : 'notes'} saved
               </span>
             </div>
           )}

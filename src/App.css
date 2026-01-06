@@ -108,7 +108,7 @@
   justify-content: center;
 }
 
-.todo-container {
+.notes-container {
   width: 100%;
   max-width: 700px;
   display: flex;
@@ -116,7 +116,7 @@
   align-items: center;
 }
 
-.tasks-list {
+.notes-list {
   width: 100%;
   max-width: 700px;
 }
